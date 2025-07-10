@@ -26,7 +26,7 @@ tar zxf data/taxdump.tar.gz -C data/ nodes.dmp names.dmp \
 # parse final.contigs.fa with split_fasta.py then run sbatch blastn.sh 
 python split_fasta.py final.contigs.fa output_directory 10000 [10000 is number of sequences per file, feel free to change]
 
-# Run sbatch bwa_samtools.sh on final.contigs.fa 
+# Run sbatch bwa_samtools.sh on final.contigs.fa (alter script to set paths)
 
 ##this will give you three sorted and indexed bam files (one for each replicate); you can specify multiple .bam mapping files in blobtools create, however this then seems to generate three separate graphs - I prefer to merge my .bams so that I only have one graph per site
 
@@ -37,7 +37,7 @@ samtools merge output.file input1.bam input2.bam input3.bam
 
 ##I created a new conda env with samtools in it since I was having issues with the spack version; I usually just run this command in sinteractive and it takes a few minutes
 
-# sort and index merged .bam file with sbatch sort_index_merged_bam.sh
+# sort and index merged .bam file with sbatch sort_index_merged_bam.sh (alter script to set paths)
 
 ##sorting and indexing the merged bam is too intensive for sinteractive, so use an sbatch script for this
 
@@ -61,9 +61,9 @@ awk -F'\t' '{ if ($6 == "no-hit") print $1 >> "no_hit_names.txt"}' blobDB.table.
 seqtk subseq /shared/rc/microalgae/metagenomes/assemblies/final.contigs.fa no_hit_names.txt >> no_hit.fasta
 
 # parse no-hit.fasta with split_fasta.py
-python split_fasta.py final.contigs.fa output_directory 10000 [10000 is number of sequences per file, feel free to change]
+python split_fasta.py no_hit.fasta output_directory 10000 [10000 is number of sequences per file, feel free to change]
 
-# run sbatch nohit_blastx.sh
+# run sbatch nohit_blastx.sh (alter script to set paths)
 
 ##I think you will have to install diamond into your home directory - some versions of diamond are compatible with the ncbi database format, however it seems that the one in the spack env is not and the conda install versions do not have this support yet - I chose to install a version of diamond that was compatible rather than trying to install a new database. Here is the website I referenced: https://github.com/bbuchfink/diamond/issues/439 and and the file downloaded: http://github.com/bbuchfink/diamond/releases/download/v2.0.9/diamond-linux64.tar.gz. You may need to use the prepdb command before running the blastx.
 
