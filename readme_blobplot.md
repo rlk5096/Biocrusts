@@ -67,9 +67,9 @@ python split_fasta.py no_hit.fasta output_directory 10000 [10000 is number of se
 
 ##I think you will have to install diamond into your home directory - some versions of diamond are compatible with the ncbi database format, however it seems that the one in the spack env is not and the conda install versions do not have this support yet - I chose to install a version of diamond that was compatible rather than trying to install a new database. Here is the website I referenced: https://github.com/bbuchfink/diamond/issues/439 and and the file downloaded: http://github.com/bbuchfink/diamond/releases/download/v2.0.9/diamond-linux64.tar.gz. You may need to use the prepdb command before running the blastx.
 
-##you may also want to look into formatting options to see if you can pull taxID number directly in this step - I have not been able to, so there are additional step to make the blastx output usable 
+**##you may also want to look into formatting options to see if you can pull taxID number directly in this step - I have not been able to, so there are additional steps to make the blastx output usable for blobplot** 
 
-# merge the blastn output files
+# merge the blastx output files
 cat *.tsv > merged_blastx.tsv
 
 # extract the tax accessions and pull their corresponding tax ID from database (I do in sinteractive)
