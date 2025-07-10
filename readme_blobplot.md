@@ -51,10 +51,13 @@ blobtools plot -i example/test.blobDB.json
 ##usually no-hits are a significant portion (top ranked taxa)
 ##I usually do this in sinteractive, but there is an sbatch script that Fernando provided as well
 
-# extract the no-hit contig names using the table generated from plotting
+# use view function to get table of contigs and associated taxa
+blobtools view test.blobDB.json
+
+# extract the no-hit contig names using the table generated from view function
 awk -F'\t' '{ if ($6 == "no-hit") print $1 >> "no_hit_names.txt"}' blobDB.table.txt
 
-# find the fasta sequences associated with the no-hit contigs - you may need to install seqtk to do it with this commandl; I just did a conda install
+# find the fasta sequences associated with the no-hit contigs - you may need to install seqtk to do it with this command; I just did a conda install
 seqtk subseq /shared/rc/microalgae/metagenomes/assemblies/final.contigs.fa no_hit_names.txt >> no_hit.fasta
 
 # parse no-hit.fasta with split_fasta.py
