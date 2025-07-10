@@ -6,15 +6,15 @@ conda create -n blobtools_env blobtools
 
 ##Activate env
 
-conda activate blobtools_env
+conda activate blobtools_env \ 
 blobtools --help
 
 ###Git in 
 /home/frvsbi/bin/blobtools
 
 ####Download NCBI taxdump and create nodesdb
-wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz -P data/
-tar zxf data/taxdump.tar.gz -C data/ nodes.dmp names.dmp
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz -P data \
+tar zxf data/taxdump.tar.gz -C data/ nodes.dmp names.dmp \
 ./blobtools nodesdb --nodes data/nodes.dmp --names data/names.dmp
 
 ##CREATE 
@@ -22,7 +22,7 @@ tar zxf data/taxdump.tar.gz -C data/ nodes.dmp names.dmp
 ./blobtools view -i example/test.blobDB.json && \
 ./blobtools plot -i example/test.blobDB.json 
 
-###-----------Workflow I use for creating blobplots------------------
+# -----------Workflow I use for creating blobplots------------------
 # parse final.contigs.fa with split_fasta.py then run sbatch blastn.sh 
 python split_fasta.py final.contigs.fa output_directory 10000 [10000 is number of sequences per file, feel free to change]
 
@@ -45,14 +45,14 @@ samtools merge output.file input1.bam input2.bam input3.bam
 cat *.out > merged_blastn.out
 
 # create initial blobplot 
-blobtools create -i example/assembly.fna -b example/merged.sorted.bam -t example/merged_blast.out -o example/test
+blobtools create -i example/assembly.fna -b example/merged.sorted.bam -t example/merged_blast.out -o example/test \
 blobtools plot -i example/test.blobDB.json 
 
 ##usually no-hits are a significant portion (top ranked taxa)
 ##I usually do this in sinteractive, but there is an sbatch script that Fernando provided as well
 
 # use view function to get table of contigs and associated taxa
-blobtools view test.blobDB.json
+blobtools view -i test.blobDB.json
 
 # extract the no-hit contig names using the table generated from view function
 awk -F'\t' '{ if ($6 == "no-hit") print $1 >> "no_hit_names.txt"}' blobDB.table.txt
@@ -73,8 +73,8 @@ python split_fasta.py final.contigs.fa output_directory 10000 [10000 is number o
 cat *.tsv > merged_blastx.tsv
 
 # extract the tax accessions and pull their corresponding tax ID from database (I do in sinteractive)
-cut -f2 merged_blastx.tsv > acessions.txt
-spack activate default-genomics-x86_64-25032001
+cut -f2 merged_blastx.tsv > acessions.txt \
+spack activate default-genomics-x86_64-25032001 \
 blastdbcmd -entry_batch /shared/rc/microalgae/metagenomes/assemblies/accessions.txt -db /shared/rc/datasets/genomics/ncbi-blast-nr_2024-10-01/nr -outfmt "%a %T" > blastx_acc2taxid.tsv
 
 # merge blastx_acc2taxid.tsv with merged_blastx.tsv
@@ -88,5 +88,5 @@ awk 'FNR==NR {gsub(/\.[0-9]+$/, "", $1); acc2tax[$1]=$2; next} {
 }' blastx_acc2taxid.tsv blastx_merged_site6.tsv > blobtools_blastx_input.tsv
 
 # create blobplot incorporating blastx results (see https://blobtools.readme.io/docs/create for all options)
-blobtools create -i example/assembly.fna -b example/merged.sorted.bam -t example/merged_blast.out -t example/blobtools_blastx_input.tsv -x "bestsumorder" -o example/test_with_nohit -n 
+blobtools create -i example/assembly.fna -b example/merged.sorted.bam -t example/merged_blast.out -t example/blobtools_blastx_input.tsv -x "bestsumorder" -o example/test_with_nohit -n \
 blobtools plot -i example/test_with_nohit.blobDB.json -x "bestsumorder"
