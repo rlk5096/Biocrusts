@@ -74,7 +74,7 @@ cat *.tsv > merged_blastx.tsv
 
 # extract the tax accessions and pull their corresponding tax ID from database (I do in sinteractive)
 cut -f2 merged_blastx.tsv > acessions.txt \
-spack activate default-genomics-x86_64-25032001 \
+spack env activate default-genomics-x86_64-25032001 \
 blastdbcmd -entry_batch /shared/rc/microalgae/metagenomes/assemblies/accessions.txt -db /shared/rc/datasets/genomics/ncbi-blast-nr_2024-10-01/nr -outfmt "%a %T" > blastx_acc2taxid.tsv
 
 # merge blastx_acc2taxid.tsv with merged_blastx.tsv
